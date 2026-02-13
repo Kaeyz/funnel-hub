@@ -1,10 +1,10 @@
 import { Type } from "class-transformer";
-import { IsNotEmpty, IsNumber, IsOptional, IsString, Min } from "class-validator";
+import { IsMongoId, IsNotEmpty, IsNumber, IsOptional, IsString, Min } from "class-validator";
 import { CustomEnum } from "src/utils/custom-decorators";
 import { SortDirection } from "src/utils/common-enums";
-import { FormSortKeys, FormStatus } from "./form.enums";
+import { FormSectionSortKeys, FormSectionStatus } from "./form-section.enums";
 
-export class FormInputDto {
+export class FormSectionInputDto {
   @IsNotEmpty()
   @IsString()
   name: string;
@@ -12,9 +12,17 @@ export class FormInputDto {
   @IsNotEmpty()
   @IsString()
   key: string;
+
+  @IsNotEmpty()
+  @IsMongoId()
+  formId: string;
 }
 
-export class GetFormsDto {
+export class GetFormSectionsDto {
+  @IsNotEmpty()
+  @IsMongoId()
+  formId: string;
+
   @IsOptional()
   @IsString()
   search?: string;
@@ -32,14 +40,14 @@ export class GetFormsDto {
   limit?: number;
 
   @IsOptional()
-  @CustomEnum(FormStatus, "status")
-  status?: FormStatus;
+  @CustomEnum(FormSectionStatus, "status")
+  status?: FormSectionStatus;
 
   @IsOptional()
   @CustomEnum(SortDirection, "sortDir")
   sortDir: SortDirection;
 
   @IsOptional()
-  @CustomEnum(FormSortKeys, "sortKey")
-  sortKey: FormSortKeys;
+  @CustomEnum(FormSectionSortKeys, "sortKey")
+  sortKey: FormSectionSortKeys;
 }

@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { Document, Types } from "mongoose";
-import { FormSection } from "./form-section.schema";
+import { Document } from "mongoose";
 import { FormStatus } from "src/modules/forms/form.enums";
 
 export type FormDoc = Form & Document;
@@ -15,9 +14,6 @@ export class Form {
 
   @Prop({ default: FormStatus.DRAFT, enum: FormStatus })
   status: FormStatus;
-
-  @Prop({ type: [Types.ObjectId], ref: "FormSection", default: [] })
-  sections: FormSection[];
 }
 
 const FormSchema = SchemaFactory.createForClass(Form);

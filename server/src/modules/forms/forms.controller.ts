@@ -1,18 +1,18 @@
 import { Body, Controller, Get, Post, Query } from "@nestjs/common";
 import { FormsService } from "./forms.service";
-import { CreateFormDto, GetFormsDto } from "./form.dto";
+import { FormInputDto, GetFormsDto } from "./form.dto";
 
 @Controller("forms")
 export class FormsController {
-  constructor(private formService: FormsService) {}
+  constructor(private service: FormsService) {}
 
   @Post()
-  createForm(@Body() createFormDto: CreateFormDto) {
-    return this.formService.createNewForm(createFormDto);
+  createForm(@Body() body: FormInputDto) {
+    return this.service.createNewForm(body);
   }
 
   @Get()
   getAllForms(@Query() getFormQuery: GetFormsDto) {
-    return this.formService.getAllForms(getFormQuery);
+    return this.service.getAllForms(getFormQuery);
   }
 }

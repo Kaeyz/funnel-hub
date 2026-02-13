@@ -1,21 +1,21 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
-import { Form, FormDoc } from "src/schemas/form.schema";
-import { CreateFormDto, GetFormsDto } from "./form.dto";
+import { Form, FormDoc } from "src/modules/forms/form.schema";
+import { FormInputDto, GetFormsDto } from "./form.dto";
 import { buildPagination, buildSortObject, parseSelectString } from "src/utils/db-query";
 import { queryFormFields } from "./form.constants";
 
 @Injectable()
 export class FormRepository {
-  constructor(@InjectModel("Form") private readonly Form: Model<Form>) {}
+  constructor(@InjectModel("Form") private readonly model: Model<Form>) {}
 
-  async create(data: CreateFormDto): Promise<FormDoc> {
-    return new this.Form(data).save();
+  async create(data: FormInputDto): Promise<FormDoc> {
+    return new this.model(data).save();
   }
 
   async findAll() {
-    return this.Form.find().exec();
+    return this.model.find().exec();
   }
 
   async getAll(query: GetFormsDto) {
@@ -32,8 +32,8 @@ export class FormRepository {
 
     if (status) queryObject["status"] = status;
 
-    const countQuery = this.Form.countDocuments(queryObject);
-    const formsQuery = this.Form.find(queryObject).select(parseSelectString(queryFormFields)).skip(skip).limit(limit).sort(sort);
+    const countQuery = this.model.countDocuments(queryObject);
+    const formsQuery = this.model.find(queryObject).select(parseSelectString(queryFormFields)).skip(skip).limit(limit).sort(sort);
 
     const [forms, count] = await Promise.all([formsQuery, countQuery]);
 
@@ -46,10 +46,18 @@ export class FormRepository {
   }
 
   async findById(id: string): Promise<FormDoc | null> {
-    return this.Form.findById(id);
+    return this.model.findById(id);
   }
 
   async findByKey(key: string): Promise<FormDoc | null> {
-    return this.Form.findOne({ key });
+    return this.model.findOne({ key });
+  }
+
+  async updateById(id: string, data: FormInputDto): Promise<FormDoc | null> {
+    return this.model.findByIdAndUpdate(id, data, { new: true });
+  }
+
+  async deleteById(id: string): Promise<FormDoc | null> {
+    return this.model.findByIdAndDelete(id);
   }
 }
