@@ -8,7 +8,7 @@ import { Question, QuestionDoc } from "./question.schema";
 
 @Injectable()
 export class QuestionRepository {
-  constructor(@InjectModel("Form") private readonly model: Model<Question>) {}
+  constructor(@InjectModel("Question") private readonly model: Model<Question>) {}
 
   async create(data: QuestionInputDto): Promise<QuestionDoc> {
     return new this.model(data).save();
