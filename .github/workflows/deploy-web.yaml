@@ -6,7 +6,7 @@ on:
       - main
     paths:
       - 'web/**'
-      - '.github/workflows/web.yaml'
+      - '.github/workflows/deploy-web.yaml'
   workflow_dispatch:
 
 jobs:
