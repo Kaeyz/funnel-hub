@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { Form, FormDoc } from "src/modules/forms/form.schema";
-import { FormInputDto, GetFormsDto } from "./form.dto";
+import { FormInputDto, FormStatusInputDto, GetFormsDto } from "./form.dto";
 import { buildPagination, buildSortObject, parseSelectString } from "src/utils/db-query";
 import { queryFormFields } from "./form.constants";
 
@@ -53,8 +53,8 @@ export class FormRepository {
     return this.model.findOne({ key });
   }
 
-  async updateById(id: string, data: FormInputDto): Promise<FormDoc | null> {
-    return this.model.findByIdAndUpdate(id, data, { new: true });
+  async updateById(id: string, data: FormInputDto | FormStatusInputDto): Promise<FormDoc | null> {
+    return this.model.findByIdAndUpdate(id, data, { returnDocument: "after" });
   }
 
   async deleteById(id: string): Promise<FormDoc | null> {

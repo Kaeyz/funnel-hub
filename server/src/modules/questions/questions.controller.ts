@@ -1,6 +1,6 @@
-import { Body, Controller, Get, Post, Query } from "@nestjs/common";
+import { Body, Controller, Get, Param, Patch, Post, Put, Query } from "@nestjs/common";
 import { QuestionsService } from "./questions.service";
-import { GetQuestionsDto, QuestionInputDto } from "./question.dto";
+import { GetQuestionsDto, QuestionInputDto, QuestionStatusInputDto } from "./question.dto";
 
 @Controller("questions")
 export class QuestionsController {
@@ -12,7 +12,17 @@ export class QuestionsController {
   }
 
   @Get()
-  getAllFormSections(@Query() query: GetQuestionsDto) {
+  getAllQuestions(@Query() query: GetQuestionsDto) {
     return this.service.getAllQuestions(query);
+  }
+
+  @Put(":id")
+  updateForm(@Param() param: { id: string }, @Body() body: QuestionInputDto) {
+    return this.service.updateQuestion(param.id, body);
+  }
+
+  @Patch(":id/status")
+  updateQuestionStatus(@Param() param: { id: string }, @Body() body: QuestionStatusInputDto) {
+    return this.service.updateQuestionStatus(param.id, body);
   }
 }

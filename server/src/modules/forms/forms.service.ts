@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { FormRepository } from "./form.repository";
-import { FormInputDto, GetFormsDto } from "./form.dto";
+import { FormInputDto, FormStatusInputDto, GetFormsDto } from "./form.dto";
 import { buildResponse } from "src/utils/response-builder";
 import { FormEntity } from "./form.entity";
 
@@ -10,7 +10,7 @@ export class FormsService {
 
   async createNewForm(data: FormInputDto) {
     const formExist = await this.repo.findByKey(data.key);
-    if (formExist) throw new BadRequestException(`Form with key:${data.key} exist`);
+    if (formExist) throw new BadRequestException({ message: `Form with key:${data.key} exist`, data });
 
     const form = await this.repo.create(data);
     return buildResponse(form.toObject(), FormEntity, "Form created successfully");
@@ -34,13 +34,11 @@ export class FormsService {
     return buildResponse(updatedForm, FormEntity, "Form updated successfully");
   }
 
-  /* async deleteForm(id: string) {
+  async updateFormStatus(id: string, data: FormStatusInputDto) {
     const formExist = await this.repo.findById(id);
     if (!formExist) throw new BadRequestException(`Form with id:${id} not found`);
 
-    // Check leads is not leads have been submitted
-
-    await this.repo.deleteById(id);
-    return buildResponse(null, FormEntity, "Form deleted");
-  } */
+    const updatedForm = await this.repo.updateById(id, data);
+    return buildResponse(updatedForm, FormEntity, "Status updated");
+  }
 }

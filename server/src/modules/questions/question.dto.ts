@@ -35,6 +35,11 @@ export class QuestionInputDto {
 
   @ApiProperty()
   @IsNotEmpty()
+  @IsNumber()
+  order: number;
+
+  @ApiProperty()
+  @IsNotEmpty()
   @IsString()
   description: string;
 
@@ -55,11 +60,23 @@ export class QuestionInputDto {
   validation: QuestionValidation;
 }
 
+export class QuestionStatusInputDto {
+  @ApiProperty()
+  @IsOptional()
+  @CustomEnum(QuestionStatus, "status")
+  status?: QuestionStatus;
+}
+
 export class GetQuestionsDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsMongoId()
   formSectionId: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsMongoId()
+  questionIds: string[];
 
   @ApiPropertyOptional()
   @IsOptional()
@@ -84,6 +101,11 @@ export class GetQuestionsDto {
   @IsOptional()
   @CustomEnum(QuestionStatus, "status")
   status?: QuestionStatus;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @CustomEnum(QuestionType, "type")
+  type?: QuestionType;
 
   @ApiPropertyOptional()
   @IsOptional()

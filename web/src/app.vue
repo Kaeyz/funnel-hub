@@ -6,6 +6,6 @@ import "vue-sonner/style.css";
 <template>
   <div>
     <router-view />
-    <Toaster position="top-right" rich-colors />
+    <Toaster position="bottom-right" rich-colors />
   </div>
 </template>

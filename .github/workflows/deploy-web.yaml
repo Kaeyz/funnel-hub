@@ -1,0 +1,64 @@
+name: Deploy Web Workflow
+
+on:
+  push:
+    branches:
+      - dev
+    paths:
+      - 'web/**'
+      - '.github/workflows/web.yaml'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [22.x]
+
+    defaults:
+      run:
+        working-directory: ./web
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Install dependencies for web
+        run: pnpm install
+
+      - name: Run Lint
+        run: pnpm lint
+
+      - name: Install Railway CLI
+        run: curl -fsSL https://railway.app/install.sh | sh
+
+      - name: Deploy to Railway
+        run: railway up --service web
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+
+      - name: Set env on Railway
+        run: |
+          variables=(
+            "VITE_API_URL=${{ secrets.VITE_API_URL }}"
+          )
+          
+          SET_FLAGS=""
+          for var in "${variables[@]}"; do
+            SET_FLAGS+="--set \"$var\" "
+          done
+
+          eval "railway variables --service web $SET_FLAGS"
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}

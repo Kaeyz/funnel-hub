@@ -17,10 +17,3 @@ export enum QuestionType {
   NUMBER = "number",
   FILE = "file",
 }
-
-export enum ShowConditionOperator {
-  EQUALS = "equals",
-  NOT_EQUALS = "notEquals",
-  GREATER_THAN = "greaterThan",
-  LESS_THAN = "lessThan",
-}

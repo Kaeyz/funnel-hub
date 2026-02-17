@@ -1,9 +1,7 @@
-<script lang="ts">
-export const description = "A simple login form.";
-</script>
+<script lang="ts"></script>
 
 <script setup lang="ts">
-import LoginForm from "@/components/auth/login-form.vue";
+import LoginForm from "@/components/auth/admin-login-form.vue";
 </script>
 
 <template>

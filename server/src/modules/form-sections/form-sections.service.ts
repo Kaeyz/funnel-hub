@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { FormSectionRepository } from "./form-section.repository";
-import { FormSectionInputDto, GetFormSectionsDto } from "./form-section.dto";
+import { FormSectionInputDto, FormSectionStatusInputDto, GetFormSectionsDto } from "./form-section.dto";
 import { buildResponse } from "src/utils/response-builder";
 import { FormSectionEntity } from "./form-section.entity";
 
@@ -30,8 +30,16 @@ export class FormSectionsService {
       if (formSectionWithKeyExist) throw new BadRequestException(`Form section with key:${data.key} exist`);
     }
 
-    const updatedForm = await this.repo.updateById(id, data);
-    return buildResponse(updatedForm, FormSectionEntity, "Form updated successfully");
+    const updatedFormSection = await this.repo.updateById(id, data);
+    return buildResponse(updatedFormSection, FormSectionEntity, "Form section updated successfully");
+  }
+
+  async updateFormSectionStatus(id: string, data: FormSectionStatusInputDto) {
+    const formExist = await this.repo.findById(id);
+    if (!formExist) throw new BadRequestException(`Form section with id:${id} not found`);
+
+    const updatedFormSection = await this.repo.updateById(id, data);
+    return buildResponse(updatedFormSection, FormSectionEntity, "Status updated");
   }
 
   /*   async deleteFormSection(id: string) {

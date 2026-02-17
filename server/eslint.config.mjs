@@ -29,9 +29,11 @@ export default tseslint.config(
       "prettier/prettier": "error",
       quotes: ["warn", "double"],
        semi: ["warn", "always"],
-      '@typescript-eslint/no-explicit-any': 'off',
-      '@typescript-eslint/no-floating-promises': 'warn',
-      '@typescript-eslint/no-unsafe-argument': 'warn',
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-floating-promises": "warn",
+      "@typescript-eslint/no-unsafe-argument": "off",
+     " eslint@typescript-eslint/prefer-promise-reject-errors": "off"
+
     },
   },
 );

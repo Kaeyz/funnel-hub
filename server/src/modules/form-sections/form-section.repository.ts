@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
-import { FormSectionInputDto, GetFormSectionsDto } from "./form-section.dto";
+import { FormSectionInputDto, FormSectionStatusInputDto, GetFormSectionsDto } from "./form-section.dto";
 import { buildPagination, buildSortObject, parseSelectString } from "src/utils/db-query";
 import { queryFormSectionFields } from "./form-section.constants";
 import { FormSection, FormSectionDoc } from "src/modules/form-sections/form-section.schema";
@@ -19,19 +19,19 @@ export class FormSectionRepository {
   }
 
   async getAll(query: GetFormSectionsDto) {
-    const { search, sortKey, sortDir, status, formId } = query;
+    const { search, sortKey, sortDir, status, formId, formSectionIds = [] } = query;
 
     const { skip, page, limit } = buildPagination(query.page, query.limit);
     const sort = buildSortObject(sortKey, sortDir);
 
     const queryObject: Record<string, unknown> = {};
 
-    if (formId) queryObject["formId"] = formId;
-
     if (search) {
       queryObject.$or = [{ $text: { $search: search } }, { name: new RegExp(search, "i") }, { key: new RegExp(search, "i") }];
     }
 
+    if (formSectionIds.length > 0) queryObject["_id"] = { $in: formSectionIds };
+    if (formId) queryObject["formId"] = formId;
     if (status) queryObject["status"] = status;
 
     const countQuery = this.model.countDocuments(queryObject);
@@ -54,8 +54,8 @@ export class FormSectionRepository {
     return this.model.findOne({ formId, key });
   }
 
-  async updateById(id: string, data: FormSectionInputDto): Promise<FormSectionDoc | null> {
-    return this.model.findByIdAndUpdate(id, data, { new: true });
+  async updateById(id: string, data: FormSectionInputDto | FormSectionStatusInputDto): Promise<FormSectionDoc | null> {
+    return this.model.findByIdAndUpdate(id, data, { returnDocument: "after" });
   }
 
   async deleteById(id: string): Promise<FormSectionDoc | null> {

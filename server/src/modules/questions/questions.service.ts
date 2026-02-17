@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { QuestionRepository } from "./question.repository";
-import { GetQuestionsDto, QuestionInputDto } from "./question.dto";
+import { GetQuestionsDto, QuestionInputDto, QuestionStatusInputDto } from "./question.dto";
 import { buildResponse } from "src/utils/response-builder";
 import { QuestionEntity } from "./question.entity";
 
@@ -32,5 +32,13 @@ export class QuestionsService {
 
     const updatedQuestion = await this.repo.updateById(id, data);
     return buildResponse(updatedQuestion, QuestionEntity, "Question updated successfully");
+  }
+
+  async updateQuestionStatus(id: string, data: QuestionStatusInputDto) {
+    const questionExist = await this.repo.findById(id);
+    if (!questionExist) throw new BadRequestException(`Question with id:${id} not found`);
+
+    const updatedQuestion = await this.repo.updateById(id, data);
+    return buildResponse(updatedQuestion, QuestionEntity, "Status updated");
   }
 }

@@ -1,0 +1,67 @@
+name: Deploy Server Workflow
+
+on:
+  push:
+    branches:
+      - dev
+    paths:
+      - 'server/**'
+      - '.github/workflows/server.yaml'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [22.x]
+
+    defaults:
+      run:
+        working-directory: ./server
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Install dependencies for server
+        run: pnpm install
+
+      - name: Run Lint
+        run: pnpm lint
+
+      - name: Install Railway CLI
+        run: curl -fsSL https://railway.app/install.sh | sh
+
+      - name: Deploy to Railway
+        run: railway up --service server
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+
+      - name: Set env on Railway
+        run: |
+          variables=(
+            "MONGO_URI=${{ secrets.MONGO_URI }}"
+            "CLOUDINARY_CLOUD_NAME=${{ secrets.CLOUDINARY_CLOUD_NAME }}"
+            "CLOUDINARY_API_KEY=${{ secrets.CLOUDINARY_API_KEY }}"
+            "CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }}"
+          )
+          
+          SET_FLAGS=""
+          for var in "${variables[@]}"; do
+            SET_FLAGS+="--set \"$var\" "
+          done
+
+          eval "railway variables --service server $SET_FLAGS"
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}

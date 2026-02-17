@@ -13,6 +13,11 @@ export class FormInputDto {
   @IsString()
   key: string;
 }
+export class FormStatusInputDto {
+  @IsOptional()
+  @CustomEnum(FormStatus, "status")
+  status?: FormStatus;
+}
 
 export class GetFormsDto {
   @IsOptional()

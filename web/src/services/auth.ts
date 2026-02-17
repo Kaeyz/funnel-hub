@@ -1,5 +1,10 @@
-const authKey = "atk";
+const adminAuthKey = "atk";
+const adminNameKey = "usn";
+
+const userAuthKey = "utk";
 const userNameKey = "usn";
+
+type UserType = "admin" | "user";
 
 export class AuthService {
   private static setItem(key: string, value: string) {
@@ -14,21 +19,35 @@ export class AuthService {
     localStorage.removeItem(key);
   }
 
-  static setAuth(username: string) {
-    this.setItem(userNameKey, username);
+  private static getNameKey(type: UserType) {
+    return type === "admin" ? adminNameKey : userNameKey;
+  }
+
+  private static getAuthKey(type: UserType) {
+    return type === "admin" ? adminAuthKey : userAuthKey;
+  }
+
+  static setAuth(username: string, type: UserType) {
+    const authKey = this.getAuthKey(type);
+    const nameKey = this.getNameKey(type);
+    this.setItem(nameKey, username);
     this.setItem(authKey, "true");
   }
 
-  static clearAuth() {
-    this.removeItem(userNameKey);
+  static clearAuth(type: UserType) {
+    const authKey = this.getAuthKey(type);
+    const nameKey = this.getNameKey(type);
+    this.removeItem(nameKey);
     this.removeItem(authKey);
   }
 
-  static isLoggedIn(): boolean {
+  static isLoggedIn(type: UserType): boolean {
+    const authKey = this.getAuthKey(type);
     return this.getItem(authKey) === "true";
   }
 
-  static getUsername(): string | null {
-    return this.getItem(userNameKey);
+  static getUsername(type: UserType): string | null {
+    const nameKey = this.getNameKey(type);
+    return this.getItem(nameKey);
   }
 }

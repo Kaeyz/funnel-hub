@@ -1,13 +1,15 @@
 <script setup lang="ts">
-import AppSidebar from "./app-sidebar.vue";
+import AdminSidebar from "./admin-sidebar.vue";
+import BreadCrumb from "./bread-crumb.vue";
 </script>
 
 <template>
   <div class="flex min-h-screen">
-    <app-sidebar>
-      <main class="flex-1 p-4">
+    <admin-sidebar>
+      <main class="grid gap-4 p-4">
+        <BreadCrumb />
         <router-view />
       </main>
-    </app-sidebar>
+    </admin-sidebar>
   </div>
 </template>

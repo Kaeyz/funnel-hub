@@ -3,13 +3,13 @@ import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { MongooseModule } from "@nestjs/mongoose";
 import { ConfigModule, ConfigService } from "@nestjs/config";
-import configuration from "./config/configuration";
+import keys from "./config/keys";
 import { allModules } from "./modules";
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      load: [configuration],
+      load: [keys],
       isGlobal: true,
     }),
     MongooseModule.forRootAsync({

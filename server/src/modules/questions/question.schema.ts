@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document } from "mongoose";
-import { QuestionStatus, QuestionType, ShowConditionOperator } from "./question.enums";
+import { QuestionStatus, QuestionType } from "./question.enums";
 
 export type QuestionDoc = Question & Document;
 
@@ -11,6 +11,9 @@ export class Question {
 
   @Prop({ required: true })
   key: string;
+
+  @Prop({ default: 0 })
+  order: number;
 
   @Prop({ required: true })
   description: string;
@@ -25,26 +28,23 @@ export class Question {
   status: QuestionStatus;
 
   @Prop({ type: Object, default: {} })
-  validationRules: {
+  validation: {
     required: boolean;
     min: number;
     max: number;
-  };
-
-  @Prop({ type: Object, default: null })
-  showCondition: {
-    questionId: string;
-    operator: ShowConditionOperator;
-    value: any;
   };
 }
 
 const QuestionSchema = SchemaFactory.createForClass(Question);
 
 QuestionSchema.index({
-  name: "text",
+  label: "text",
   key: "text",
   description: "text",
 });
+
+QuestionSchema.index({ label: 1 });
+QuestionSchema.index({ key: 1 });
+QuestionSchema.index({ description: 1 });
 
 export { QuestionSchema };

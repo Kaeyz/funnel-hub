@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
-import { GetQuestionsDto, QuestionInputDto } from "./question.dto";
+import { GetQuestionsDto, QuestionInputDto, QuestionStatusInputDto } from "./question.dto";
 import { buildPagination, buildSortObject, parseSelectString } from "src/utils/db-query";
 import { questionQueryFields } from "./question.constants";
 import { Question, QuestionDoc } from "./question.schema";
@@ -19,7 +19,7 @@ export class QuestionRepository {
   }
 
   async getAll(query: GetQuestionsDto) {
-    const { search, sortKey, sortDir, status, formSectionId } = query;
+    const { search, sortKey, sortDir, status, type, formSectionId, questionIds = [] } = query;
 
     const { skip, page, limit } = buildPagination(query.page, query.limit);
     const sort = buildSortObject(sortKey, sortDir);
@@ -27,10 +27,17 @@ export class QuestionRepository {
     const queryObject: Record<string, unknown> = {};
 
     if (search) {
-      queryObject.$or = [{ $text: { $search: search } }, { name: new RegExp(search, "i") }, { key: new RegExp(search, "i") }];
+      queryObject.$or = [
+        { $text: { $search: search } },
+        { description: new RegExp(search, "i") },
+        { label: new RegExp(search, "i") },
+        { key: new RegExp(search, "i") },
+      ];
     }
     if (formSectionId) queryObject["formSectionId"] = formSectionId;
+    if (questionIds.length > 0) queryObject["_id"] = { $in: questionIds };
     if (status) queryObject["status"] = status;
+    if (type) queryObject["type"] = type;
 
     const countQuery = this.model.countDocuments(queryObject);
     const dataQuery = this.model
@@ -53,8 +60,8 @@ export class QuestionRepository {
     return this.model.findOne({ key });
   }
 
-  async updateById(id: string, data: QuestionInputDto): Promise<QuestionDoc | null> {
-    return this.model.findByIdAndUpdate(id, data, { new: true });
+  async updateById(id: string, data: QuestionInputDto | QuestionStatusInputDto): Promise<QuestionDoc | null> {
+    return this.model.findByIdAndUpdate(id, data, { returnDocument: "after" });
   }
 
   async deleteById(id: string): Promise<QuestionDoc | null> {
