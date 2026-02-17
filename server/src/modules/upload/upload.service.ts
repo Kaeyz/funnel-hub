@@ -9,7 +9,7 @@ export class UploadService {
   constructor(
     private readonly cloudinaryService: CloudinaryService,
     private readonly leadsService: LeadsService
-  ) { }
+  ) {}
 
   async upload(file: Express.Multer.File, options: FileInputDto) {
     if (!file) {
@@ -26,6 +26,6 @@ export class UploadService {
     const res = await this.cloudinaryService.upload(fileData);
     if (res.status === "failed") throw new BadRequestException(res.data?.message);
 
-    return this.leadsService.updateLeadData(options.leadId, {[options.questionId] : res.data.url })
+    return this.leadsService.updateLeadData(options.leadId, { [options.questionId]: res.data.url });
   }
 }

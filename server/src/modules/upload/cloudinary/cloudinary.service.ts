@@ -34,9 +34,8 @@ export class CloudinaryService {
     };
 
     const uploadRes = await uploadBuffer(fileData.file.buffer, uploadOptions).catch((err: UploadApiErrorResponse) => {
-        response.data = err;
-      }
-    );
+      response.data = err;
+    });
     if (response.data || !uploadRes) return response;
 
     return {
