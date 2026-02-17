@@ -3,7 +3,7 @@ name: Deploy Server Workflow
 on:
   push:
     branches:
-      - dev
+      - main
     paths:
       - 'server/**'
       - '.github/workflows/server.yaml'

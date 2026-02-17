@@ -3,7 +3,7 @@ name: Deploy Web Workflow
 on:
   push:
     branches:
-      - dev
+      - main
     paths:
       - 'web/**'
       - '.github/workflows/web.yaml'
