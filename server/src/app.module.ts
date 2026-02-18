@@ -5,13 +5,12 @@ import { MongooseModule } from "@nestjs/mongoose";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import keys from "./config/keys";
 import { allModules } from "./modules";
+import { ThrottlerModule } from "@nestjs/throttler";
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      load: [keys],
-      isGlobal: true,
-    }),
+    ThrottlerModule.forRoot({ throttlers: [{ ttl: 60, limit: 20 }] }),
+    ConfigModule.forRoot({ load: [keys], isGlobal: true }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -22,6 +21,6 @@ import { allModules } from "./modules";
     ...allModules,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [  AppService],
 })
 export class AppModule {}
