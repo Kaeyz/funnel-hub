@@ -7,7 +7,7 @@ import { Button } from "../ui/button";
 import { updateForm } from "@/services/forms";
 import { useApi } from "@/composables/useApi";
 import { FieldGroup } from "../ui/field";
-import type { Form } from "@/services/types/question.type";
+import type { Form } from "@/services/types/form.type";
 
 const props = defineProps<{
   data: Form;
