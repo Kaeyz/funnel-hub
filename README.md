@@ -196,6 +196,7 @@ pnpm dev
 1. Visit the frontend URL.
 2. **User Section:** Navigate to `/` to fill out forms.
 3. **Admin Section:** Navigate to `/admin` to manage forms and view submissions.
+4. Simple FE auth system mainly for identification and not authentication.
 4. Users can fill each section — answers are automatically saved offline.
 5. File-type questions allow file uploads.
 6. Submit the form — data is sent to the backend and files are uploaded.
@@ -212,3 +213,32 @@ pnpm dev
 
 > **Note:** The same username system is used for both sections.
 
+
+# Infra Const
+
+## Stage A – 5,000 leads/month
+
+1. Focus: Low-cost, speed-to-market
+2. Frontend: Vite static site deployed on Railway / Netlify / Vercel
+3. Backend: NestJS on Railway basic plan on railway(Using railway because i already have an account.)
+4. Database: MongoDB Atlas free tier
+5. File Storage: Free cloudinary instance account because i do nt have a personal GCP or AWS account.
+6. Monitoring: Minimal – console logs + simple error handling
+7. Cost: ~$0–$10/month depending on hosting
+8. Rate Limiting: Implemented to prevent abuse
+
+## Stage B – 50,000 leads/month
+
+1. Focus: Reliability, observability, stability
+2. Frontend: Same, use custom domain and cloudflare cname management.
+3. Backend: Scalable NestJS instance with auto-scaling
+4. Database: MongoDB Atlas M10+ tier with replication
+5. Monitoring: winston logger + DB or Sentry, Prometheus or Grafana
+6. Backups: Daily automated MongoDB backups(comes with a paid instance)
+7. Implement proper authentication with jwt tokens or sessions.
+8. FE and BE Caching
+9. Unit and E2E testing.
+
+Cost: ~$50 $200/month depending on scaling requirements
+
+AI - Chat GPT, to generate initial ui code template samples. All business logic, integration, and customization decisions were done manually. 
